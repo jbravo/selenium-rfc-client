@@ -226,6 +226,9 @@ public class PlanLoader {
 					}
 					driverUtils.takeScreenshot(currentRun, null);
 
+					// FIXME insert here pdf generator
+					driverUtils.generatePdfFromHtml(currentRun);
+
 					// Web Timings API
 					if (DefaultSeleniumConfig.getConfig().getWebTimings() != null) {
 						timingUtils.calculateTimings(currentRun);

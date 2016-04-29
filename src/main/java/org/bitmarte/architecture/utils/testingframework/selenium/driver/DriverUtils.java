@@ -1,6 +1,7 @@
 package org.bitmarte.architecture.utils.testingframework.selenium.driver;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.util.StringTokenizer;
 
 import org.apache.commons.io.FileUtils;
@@ -19,6 +20,11 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.Augmenter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.pdf.PdfWriter;
 
 /**
  * @author bitmarte
@@ -118,6 +124,35 @@ public class DriverUtils {
 			} else {
 				return testResult;
 			}
+		}
+	}
+
+	public void generatePdfFromHtml(Run run) throws Exception {
+		try {
+			String archivePath = DefaultSeleniumConfig.getConfig().getReportBaseDir() + this.planName + "/screenshots/";
+			String screenshotFileName = "Ordine_" + run.getRunName();
+
+			new File(DefaultSeleniumConfig.getConfig().getReportBaseDir() + this.planName + "/screenshots/pdf/")
+					.mkdir();
+
+			Document document = new Document();
+			document.setMargins(0, 0, 10, 0);
+			PdfWriter.getInstance(document, new FileOutputStream(archivePath + "pdf/" + screenshotFileName + ".pdf"));
+			document.open();
+			Image image = Image.getInstance(archivePath + screenshotFileName + ".png");
+
+			image.scaleToFit(PageSize.A4.getWidth(), PageSize.A4.getHeight());
+			document.add(image);
+
+			document.close();
+
+			try {
+				FileUtils.forceDelete(new File(archivePath + "pdf/Ordine_login.pdf"));
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+		} catch (Exception e) {
+			throw e;
 		}
 	}
 
